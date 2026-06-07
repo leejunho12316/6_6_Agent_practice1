@@ -1,0 +1,17 @@
+services:
+  agent:
+    build: .
+    env_file: .env
+    restart: always
+    expose:
+      - "8080"  # 컨테이너끼리만 통신(expose)
+
+  nginx:
+    image: nginx:alpine # 빌드 없이 공식 이미지 사용
+    ports:
+      - "80:80"  # 호스트:컨테이너 포트 매핑, 외부 노출(ports)
+    volumes:
+      - ./nginx/agent.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - agent  # agent 시작 후 nginx 시작
+    restart: always
